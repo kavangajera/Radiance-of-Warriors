@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import GlobeView from './components/GlobeView';
+import StatsModal from './components/StatsModal';
+import Header from './components/Header';
+import Aircraft from './pages/Aircraft';
+import './styles/styles.css';
 
-function App() {
+// Globe container component with navigation capability
+const GlobeContainer = () => {
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const navigate = useNavigate();
+
+  const handleCountryClick = (country) => {
+    if (country) {
+      const countryName = country.properties.name;
+      
+      // Special case for India - navigate directly to aircraft page
+      if (countryName === 'India') {
+        navigate('/aircraft/india');
+      } else {
+        // For other countries, show stats modal
+        setSelectedCountry(country);
+      }
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="globe-container">
+      <Header title="क्षात्रतेज - Radiance of Warriors" />
+      <GlobeView onCountryClick={handleCountryClick} />
+      {selectedCountry && (
+        <StatsModal 
+          country={selectedCountry} 
+          onClose={() => setSelectedCountry(null)}
+          onViewAircraft={() => {
+            const countryName = selectedCountry.properties.name.toLowerCase();
+            navigate(`/aircraft/${countryName}`);
+          }}
+        />
+      )}
     </div>
   );
-}
+};
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<GlobeContainer />} />
+        <Route path="/aircraft/:country" element={<Aircraft />} />
+      </Routes>
+    </Router>
+  );
+};
 
 export default App;
