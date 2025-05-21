@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import GlobeView from './components/GlobeView';
 import StatsModal from './components/StatsModal';
 import Header from './components/Header';
+import News from './pages/News';
 import Aircraft from './pages/Aircraft';
 import './styles/styles.css';
 
@@ -18,7 +19,11 @@ const GlobeContainer = () => {
       // Special case for India - navigate directly to aircraft page
       if (countryName === 'India') {
         navigate('/aircraft/india');
-      } else {
+      }
+      else if (countryName === 'Russia') {
+        navigate('/aircraft/russia');
+      }
+       else {
         // For other countries, show stats modal
         setSelectedCountry(country);
       }
@@ -49,6 +54,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<GlobeContainer />} />
         <Route path="/aircraft/:country" element={<Aircraft />} />
+        <Route path="/news" element={<News />} />
       </Routes>
     </Router>
   );
