@@ -1,0 +1,38 @@
+[
+  {
+    "url": "https://www.warpowerindia.com/airpower.php",
+    "image_url": "https://www.warpowerindia.com/imgs/aircraft/med/tejas.webp",
+    "title": "Tempest Conquers: Indian Airpower",
+    "description": "Combining foreign procurements with homegrown solutions, the Indian Air Force features over 2,000 active fixed-wing and rotary-wing aircraft at its disposal."
+  },
+  {
+    "url": "https://www.warpowerindia.com/landpower.php",
+    "image_url": "https://www.warpowerindia.com/imgs/armor/med/t90.webp",
+    "title": "Land of the Gods: Indian Ground Forces",
+    "description": "Heavy armor and ranged artillery is key to the armored spearhead that is the Indian Army and its mobile fighting brigades."
+  },
+  {
+    "url": "https://www.warpowerindia.com/navalpower.php",
+    "image_url": "https://www.warpowerindia.com/imgs/ships/med/kalvari.webp",
+    "title": "Varuna Calls: the Indian Navy",
+    "description": "The Indian Navy oversees some 260 total active hulls led by aircraft carriers, attack submarines, and guided-missile surface combatants."
+  },
+  {
+    "url": "https://www.warpowerindia.com/droneforce.php",
+    "image_url": "https://www.warpowerindia.com/imgs/aircraft/med/searcher.webp",
+    "title": "Hunter-Seekers: Indian Drone Power",
+    "description": "As the importance of over-battlefield unmanned systems continues to grow globally, the Indian military continues to built up its drone force."
+  },
+  {
+    "url": "https://www.warpowerindia.com/indian-military-ranks.php",
+    "image_url": "/data/army/rank.jpg",
+    "title": "Men-at-Arms: Indian Military Ranks",
+    "description": "Influenced by British military structure, the modern Indian military organizes under a pattern common to Western fighting forces."
+  },
+  {
+    "url": "https://www.warpowerindia.com/manpower.php",
+    "image_url": "/data/army/man-power.avif",
+    "title": "Homeland Defense: Indian Manpower",
+    "description": "The nation of India has one of the largest populations on the planet allowing it to field one of the largest militaries in turn."
+  }
+]
