@@ -94,10 +94,13 @@ const OverviewModal = ({ country, onClose }) => {
     if (card.title.toLowerCase().includes('air') || card.title.toLowerCase().includes('tempest')) {
       navigate(`/aircraft/${countryName}`);
     } else if (card.title.toLowerCase().includes('ground') || card.title.toLowerCase().includes('land')) {
-      navigate(`/aircraft/${countryName}`);
+      navigate(`/land/${countryName}`);
     } else if (card.title.toLowerCase().includes('naval') || card.title.toLowerCase().includes('navy')) {
-      navigate(`/aircraft/${countryName}`);
-    } else {
+      navigate(`/naval/${countryName}`);
+    } else if (card.title.toLowerCase().includes('drone') || card.title.toLowerCase().includes('unmanned')) {
+      navigate(`/drone/${countryName}`);
+    }
+    else {
       // For other cards, you can add more specific routing or open external URLs
       
         navigate(`/aircraft/${countryName}`);

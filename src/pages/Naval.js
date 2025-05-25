@@ -2,12 +2,43 @@
 
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import AircraftCard from "../components/AircraftCard"
+import NavalCard from "../components/NavalCard"
 import Header from "../components/Header"
 
-const Aircraft = () => {
-  var { country } = useParams()
-  const [aircraftData, setAircraftData] = useState([])
+const WarshipIcon = () => (
+  <svg width="36" height="20" viewBox="0 0 36 20" fill="currentColor" style={{marginRight: '12px'}}>
+    {/* Hull */}
+    <path d="M2 14 L4 18 L32 18 L34 14 L32 12 L4 12 Z" fill="currentColor"/>
+    
+    {/* Flight deck */}
+    <rect x="4" y="10" width="28" height="4" rx="2"/>
+    
+    {/* Island superstructure */}
+    <rect x="20" y="6" width="8" height="6" rx="1"/>
+    <rect x="22" y="4" width="4" height="4" rx="1"/>
+    
+    {/* Control tower */}
+    <rect x="23" y="2" width="2" height="6" rx="1"/>
+    
+    {/* Aircraft on deck */}
+    <rect x="8" y="9" width="3" height="1" rx="0.5" opacity="0.8"/>
+    <rect x="12" y="9" width="3" height="1" rx="0.5" opacity="0.8"/>
+    <rect x="16" y="9" width="3" height="1" rx="0.5" opacity="0.8"/>
+    
+    {/* Catapult tracks */}
+    <line x1="6" y1="11" x2="18" y2="11" stroke="currentColor" strokeWidth="0.5" opacity="0.6"/>
+    <line x1="6" y1="13" x2="18" y2="13" stroke="currentColor" strokeWidth="0.5" opacity="0.6"/>
+    
+    {/* Radar */}
+    <rect x="24" y="1" width="1" height="5" rx="0.5"/>
+    <circle cx="24.5" cy="2" r="0.5" fill="none" stroke="currentColor" strokeWidth="0.3"/>
+  </svg>
+)
+
+
+const Naval = () => {
+  const { country } = useParams()
+  const [navalData, setNavalData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
@@ -36,11 +67,9 @@ const Aircraft = () => {
       try {
         setLoading(true)
         setSystemStatus("LOADING")
-        if(country.toLowerCase() === "united states of america") {
-          country = "us"
-        }
+
         const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/military/${country.toLowerCase()}/airpower`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/military/${country.toLowerCase()}/navalpower`,
         )
 
         if (!response.ok) {
@@ -49,12 +78,12 @@ const Aircraft = () => {
 
         const result = await response.json()
         const data = result.data
-        setAircraftData(data)
+        setNavalData(data)
         calculateStats(data)
         setSystemStatus("ONLINE")
         setLoading(false)
       } catch (err) {
-        console.error("Error fetching aircraft data:", err)
+        console.error("Error fetching naval data:", err)
         setError(err.message)
         setSystemStatus("ERROR")
         setLoading(false)
@@ -79,10 +108,10 @@ const Aircraft = () => {
     const statsByRole = {}
     const statsByCountry = {}
 
-    data.forEach((aircraft) => {
-      statsByService[aircraft.service] = (statsByService[aircraft.service] || 0) + aircraft.units
-      statsByRole[aircraft.role] = (statsByRole[aircraft.role] || 0) + aircraft.units
-      statsByCountry[aircraft.country] = (statsByCountry[aircraft.country] || 0) + aircraft.units
+    data.forEach((naval) => {
+      statsByService[naval.service] = (statsByService[naval.service] || 0) + naval.units
+      statsByRole[naval.role] = (statsByRole[naval.role] || 0) + naval.units
+      statsByCountry[naval.country] = (statsByCountry[naval.country] || 0) + naval.units
     })
 
     const totalUnits = Object.values(statsByService).reduce((sum, current) => sum + current, 0)
@@ -97,19 +126,19 @@ const Aircraft = () => {
 
   // Get unique values for filter dropdowns
   const getUniqueValues = (key) => {
-    return [...new Set(aircraftData.map((item) => item[key]))]
+    return [...new Set(navalData.map((item) => item[key]))]
   }
 
   // Apply filters and search
-  const filteredAircraft = aircraftData.filter((aircraft) => {
+  const filteredNaval = navalData.filter((naval) => {
     const matchesSearch =
-      aircraft.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      aircraft.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      aircraft.description.toLowerCase().includes(searchTerm.toLowerCase())
+      naval.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      naval.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      naval.description.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesService = filters.service === "ALL" || aircraft.service === filters.service
-    const matchesRole = filters.role === "ALL" || aircraft.role === filters.role
-    const matchesCountry = filters.country === "ALL" || aircraft.country === filters.country
+    const matchesService = filters.service === "ALL" || naval.service === filters.service
+    const matchesRole = filters.role === "ALL" || naval.role === filters.role
+    const matchesCountry = filters.country === "ALL" || naval.country === filters.country
 
     return matchesSearch && matchesService && matchesRole && matchesCountry
   })
@@ -128,7 +157,7 @@ const Aircraft = () => {
         <div style={loadingContentStyle}>
           <div style={loadingSpinnerStyle}></div>
           <div style={loadingTextStyle}>ACCESSING MILITARY DATABASE...</div>
-          <div style={loadingSubTextStyle}>DECRYPTING AIRCRAFT DATA</div>
+          <div style={loadingSubTextStyle}>DECRYPTING NAVAL DATA</div>
         </div>
       </div>
     )
@@ -149,7 +178,7 @@ const Aircraft = () => {
 
   return (
     <div style={pageContainerStyle}>
-      <Header title={`${country.charAt(0).toUpperCase() + country.slice(1)} Air Force Command`} />
+      <Header title={`${country.charAt(0).toUpperCase() + country.slice(1)} Naval Force Command`} />
 
       <div style={contentContainerStyle}>
         {/* Navigation and status bar */}
@@ -170,8 +199,8 @@ const Aircraft = () => {
         {/* Mission briefing header */}
         <div style={missionHeaderStyle}>
           <div style={missionTitleStyle}>
-            <span style={missionIconStyle}>✈</span>
-            AIRCRAFT INVENTORY SYSTEM
+            <WarshipIcon/>
+            NAVAL INVENTORY SYSTEM
           </div>
           <div style={missionSubtitleStyle}>CLASSIFIED MILITARY ASSETS - {country.toUpperCase()}</div>
         </div>
@@ -185,7 +214,7 @@ const Aircraft = () => {
 
           <div style={statsGridStyle}>
             <div style={statCardStyle("#4B5320")}>
-              <div style={statHeaderStyle}>TOTAL AIRCRAFT</div>
+              <div style={statHeaderStyle}>TOTAL NAVAL</div>
               <div style={statValueStyle}>{stats.total}</div>
               <div style={statSubtextStyle}>OPERATIONAL UNITS</div>
             </div>
@@ -242,7 +271,7 @@ const Aircraft = () => {
               <label style={controlLabelStyle}>SEARCH QUERY</label>
               <input
                 type="text"
-                placeholder="Enter aircraft designation..."
+                placeholder="Enter naval designation..."
                 style={searchInputStyle}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -303,25 +332,25 @@ const Aircraft = () => {
         <div style={resultsHeaderStyle}>
           <div style={resultsInfoStyle}>
             <span style={resultsIconStyle}>📊</span>
-            DISPLAYING {filteredAircraft.length} OF {aircraftData.length} AIRCRAFT
-            {filteredAircraft.length > 0 &&
-              ` (${filteredAircraft.reduce((sum, aircraft) => sum + aircraft.units, 0)} TOTAL UNITS)`}
+            DISPLAYING {filteredNaval.length} OF {navalData.length} NAVAL
+            {filteredNaval.length > 0 &&
+              ` (${filteredNaval.reduce((sum, naval) => sum + naval.units, 0)} TOTAL UNITS)`}
           </div>
         </div>
 
-        {/* Aircraft grid */}
-        <div style={aircraftGridStyle}>
-          {filteredAircraft.map((aircraft, index) => (
-            <AircraftCard key={index} aircraft={aircraft} />
+        {/* naval grid */}
+        <div style={navalGridStyle}>
+          {filteredNaval.map((naval, index) => (
+            <NavalCard key={index} naval={naval} />
           ))}
         </div>
 
         {/* No results message */}
-        {filteredAircraft.length === 0 && (
+        {filteredNaval.length === 0 && (
           <div style={noResultsContainerStyle}>
             <div style={noResultsContentStyle}>
               <div style={noResultsIconStyle}>⚠</div>
-              <div style={noResultsTextStyle}>NO AIRCRAFT MATCH CURRENT PARAMETERS</div>
+              <div style={noResultsTextStyle}>NO NAVAL MATCH CURRENT PARAMETERS</div>
               <div style={noResultsSubtextStyle}>ADJUST SEARCH CRITERIA OR RESET FILTERS</div>
               <button
                 style={resetButtonStyle}
@@ -684,7 +713,7 @@ const resultsIconStyle = {
   fontSize: "14px",
 }
 
-const aircraftGridStyle = {
+const navalGridStyle = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
   gap: "20px",
@@ -738,4 +767,4 @@ const resetButtonStyle = {
   transition: "all 0.2s ease",
 }
 
-export default Aircraft
+export default Naval

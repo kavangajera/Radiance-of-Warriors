@@ -2,13 +2,13 @@
 
 import { useState } from "react"
 
-const AircraftCard = ({ aircraft }) => {
+const DroneCard = ({ drone }) => {
   const [showModal, setShowModal] = useState(false)
   const [flagError, setFlagError] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
   // Check if 3D model is available
-  const has3DModel = aircraft.sketchfab_embed_url && aircraft.sketchfab_embed_url !== "NOT FOUND"
+  const has3DModel = drone.sketchfab_embed_url && drone.sketchfab_embed_url !== "NOT FOUND"
 
   return (
     <div style={cardContainerStyle}>
@@ -21,8 +21,8 @@ const AircraftCard = ({ aircraft }) => {
       <div style={cardInnerStyle}>
         <div style={imageContainerStyle}>
           <img
-            src={aircraft.image_url || "/placeholder.svg"}
-            alt={aircraft.name}
+            src={drone.image_url || "/placeholder.svg"}
+            alt={drone.name}
             style={{
               ...imageStyle,
               opacity: imageLoaded ? 1 : 0.7,
@@ -41,8 +41,8 @@ const AircraftCard = ({ aircraft }) => {
           <div style={countryBadgeStyle}>
             {!flagError && (
               <img
-                src={`/data/flags/${aircraft.country.toLowerCase()}.jpg`}
-                alt={aircraft.country}
+                src={`/data/flags/${drone.country.toLowerCase()}.jpg`}
+                alt={drone.country}
                 style={flagStyle}
                 onError={(e) => {
                   setFlagError(true)
@@ -50,18 +50,18 @@ const AircraftCard = ({ aircraft }) => {
                 }}
               />
             )}
-            <span style={countryTextStyle}>{aircraft.country}</span>
+            <span style={countryTextStyle}>{drone.country}</span>
           </div>
 
           {/* Service branch indicator */}
           <div style={serviceBadgeStyle}>
             <div style={statusLightStyle}></div>
-            <span style={serviceTextStyle}>{aircraft.service}</span>
+            <span style={serviceTextStyle}>{drone.service}</span>
           </div>
 
           {/* Aviation callsign style identifier */}
           <div style={callsignStyle}>
-            {aircraft.name
+            {drone.name
               .split(" ")
               .map((word) => word.charAt(0))
               .join("")
@@ -70,29 +70,29 @@ const AircraftCard = ({ aircraft }) => {
         </div>
 
         <div style={contentStyle}>
-          {/* Aircraft designation header */}
+          {/* drone designation header */}
           <div style={headerSectionStyle}>
-            <h2 style={aircraftNameStyle}>{aircraft.name}</h2>
+            <h2 style={droneNameStyle}>{drone.name}</h2>
             <div style={roleBadgeStyle}>
-              <span style={roleTextStyle}>{aircraft.role}</span>
+              <span style={roleTextStyle}>{drone.role}</span>
             </div>
           </div>
 
           {/* Model designation */}
           <div style={modelSectionStyle}>
             <span style={modelLabelStyle}>MODEL:</span>
-            <span style={modelValueStyle}>{aircraft.model}</span>
+            <span style={modelValueStyle}>{drone.model}</span>
           </div>
 
           {/* Flight data section */}
           <div style={flightDataStyle}>
             <div style={dataRowStyle}>
               <span style={dataLabelStyle}>UNITS:</span>
-              <span style={dataValueStyle}>{aircraft.units}</span>
+              <span style={dataValueStyle}>{drone.units}</span>
             </div>
             <div style={dataRowStyle}>
               <span style={dataLabelStyle}>STATUS:</span>
-              <span style={assessmentStyle}>{aircraft.assessment}</span>
+              <span style={assessmentStyle}>{drone.assessment}</span>
             </div>
           </div>
 
@@ -102,7 +102,7 @@ const AircraftCard = ({ aircraft }) => {
           {/* Mission brief */}
           <div style={missionBriefStyle}>
             <div style={briefHeaderStyle}>MISSION BRIEF:</div>
-            <p style={descriptionStyle}>{aircraft.description}</p>
+            <p style={descriptionStyle}>{drone.description}</p>
           </div>
 
           {/* Action button */}
@@ -144,7 +144,7 @@ const AircraftCard = ({ aircraft }) => {
             <div style={modalHeaderStyle}>
               <div style={modalTitleSectionStyle}>
                 <div style={modalStatusLightStyle}></div>
-                <h3 style={modalTitleStyle}>AIRCRAFT INSPECTION: {aircraft.name.toUpperCase()}</h3>
+                <h3 style={modalTitleStyle}>DRONE INSPECTION: {drone.name.toUpperCase()}</h3>
               </div>
               <button
                 onClick={() => setShowModal(false)}
@@ -167,13 +167,13 @@ const AircraftCard = ({ aircraft }) => {
             <div style={viewerContainerStyle}>
               <div style={viewerFrameStyle}>
                 <iframe
-                  title={`${aircraft.name} 3D Model`}
+                  title={`${drone.name} 3D Model`}
                   frameBorder="0"
                   allowFullScreen
                   mozallowfullscreen="true"
                   webkitallowfullscreen="true"
                   allow="autoplay; fullscreen; xr-spatial-tracking"
-                  src={aircraft.sketchfab_embed_url}
+                  src={drone.sketchfab_embed_url}
                   style={iframeStyle}
                 ></iframe>
               </div>
@@ -319,7 +319,7 @@ const headerSectionStyle = {
   marginBottom: "8px",
 }
 
-const aircraftNameStyle = {
+const droneNameStyle = {
   color: "#8FBC8F",
   fontSize: "16px",
   fontWeight: "bold",
@@ -552,4 +552,4 @@ const iframeStyle = {
   border: "none",
 }
 
-export default AircraftCard
+export default DroneCard

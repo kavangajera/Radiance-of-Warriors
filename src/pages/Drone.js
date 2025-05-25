@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import AircraftCard from "../components/AircraftCard"
+import DroneCard from "../components/DroneCard"
 import Header from "../components/Header"
 
-const Aircraft = () => {
-  var { country } = useParams()
-  const [aircraftData, setAircraftData] = useState([])
+const Drone = () => {
+  const { country } = useParams()
+  const [droneData, setDroneData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
@@ -36,11 +36,9 @@ const Aircraft = () => {
       try {
         setLoading(true)
         setSystemStatus("LOADING")
-        if(country.toLowerCase() === "united states of america") {
-          country = "us"
-        }
+
         const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/military/${country.toLowerCase()}/airpower`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/military/${country.toLowerCase()}/droneforce`,
         )
 
         if (!response.ok) {
@@ -49,12 +47,12 @@ const Aircraft = () => {
 
         const result = await response.json()
         const data = result.data
-        setAircraftData(data)
+        setDroneData(data)
         calculateStats(data)
         setSystemStatus("ONLINE")
         setLoading(false)
       } catch (err) {
-        console.error("Error fetching aircraft data:", err)
+        console.error("Error fetching drone data:", err)
         setError(err.message)
         setSystemStatus("ERROR")
         setLoading(false)
@@ -79,10 +77,10 @@ const Aircraft = () => {
     const statsByRole = {}
     const statsByCountry = {}
 
-    data.forEach((aircraft) => {
-      statsByService[aircraft.service] = (statsByService[aircraft.service] || 0) + aircraft.units
-      statsByRole[aircraft.role] = (statsByRole[aircraft.role] || 0) + aircraft.units
-      statsByCountry[aircraft.country] = (statsByCountry[aircraft.country] || 0) + aircraft.units
+    data.forEach((drone) => {
+      statsByService[drone.service] = (statsByService[drone.service] || 0) + drone.units
+      statsByRole[drone.role] = (statsByRole[drone.role] || 0) + drone.units
+      statsByCountry[drone.country] = (statsByCountry[drone.country] || 0) + drone.units
     })
 
     const totalUnits = Object.values(statsByService).reduce((sum, current) => sum + current, 0)
@@ -97,19 +95,19 @@ const Aircraft = () => {
 
   // Get unique values for filter dropdowns
   const getUniqueValues = (key) => {
-    return [...new Set(aircraftData.map((item) => item[key]))]
+    return [...new Set(droneData.map((item) => item[key]))]
   }
 
   // Apply filters and search
-  const filteredAircraft = aircraftData.filter((aircraft) => {
+  const filteredDrone = droneData.filter((drone) => {
     const matchesSearch =
-      aircraft.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      aircraft.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      aircraft.description.toLowerCase().includes(searchTerm.toLowerCase())
+      drone.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      drone.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      drone.description.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesService = filters.service === "ALL" || aircraft.service === filters.service
-    const matchesRole = filters.role === "ALL" || aircraft.role === filters.role
-    const matchesCountry = filters.country === "ALL" || aircraft.country === filters.country
+    const matchesService = filters.service === "ALL" || drone.service === filters.service
+    const matchesRole = filters.role === "ALL" || drone.role === filters.role
+    const matchesCountry = filters.country === "ALL" || drone.country === filters.country
 
     return matchesSearch && matchesService && matchesRole && matchesCountry
   })
@@ -128,7 +126,7 @@ const Aircraft = () => {
         <div style={loadingContentStyle}>
           <div style={loadingSpinnerStyle}></div>
           <div style={loadingTextStyle}>ACCESSING MILITARY DATABASE...</div>
-          <div style={loadingSubTextStyle}>DECRYPTING AIRCRAFT DATA</div>
+          <div style={loadingSubTextStyle}>DECRYPTING DRONE DATA</div>
         </div>
       </div>
     )
@@ -171,7 +169,7 @@ const Aircraft = () => {
         <div style={missionHeaderStyle}>
           <div style={missionTitleStyle}>
             <span style={missionIconStyle}>✈</span>
-            AIRCRAFT INVENTORY SYSTEM
+            DRONE INVENTORY SYSTEM
           </div>
           <div style={missionSubtitleStyle}>CLASSIFIED MILITARY ASSETS - {country.toUpperCase()}</div>
         </div>
@@ -185,7 +183,7 @@ const Aircraft = () => {
 
           <div style={statsGridStyle}>
             <div style={statCardStyle("#4B5320")}>
-              <div style={statHeaderStyle}>TOTAL AIRCRAFT</div>
+              <div style={statHeaderStyle}>TOTAL DRONE</div>
               <div style={statValueStyle}>{stats.total}</div>
               <div style={statSubtextStyle}>OPERATIONAL UNITS</div>
             </div>
@@ -242,7 +240,7 @@ const Aircraft = () => {
               <label style={controlLabelStyle}>SEARCH QUERY</label>
               <input
                 type="text"
-                placeholder="Enter aircraft designation..."
+                placeholder="Enter drone designation..."
                 style={searchInputStyle}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -303,25 +301,25 @@ const Aircraft = () => {
         <div style={resultsHeaderStyle}>
           <div style={resultsInfoStyle}>
             <span style={resultsIconStyle}>📊</span>
-            DISPLAYING {filteredAircraft.length} OF {aircraftData.length} AIRCRAFT
-            {filteredAircraft.length > 0 &&
-              ` (${filteredAircraft.reduce((sum, aircraft) => sum + aircraft.units, 0)} TOTAL UNITS)`}
+            DISPLAYING {filteredDrone.length} OF {droneData.length} DRONE
+            {filteredDrone.length > 0 &&
+              ` (${filteredDrone.reduce((sum, drone) => sum + drone.units, 0)} TOTAL UNITS)`}
           </div>
         </div>
 
-        {/* Aircraft grid */}
-        <div style={aircraftGridStyle}>
-          {filteredAircraft.map((aircraft, index) => (
-            <AircraftCard key={index} aircraft={aircraft} />
+        {/* drone grid */}
+        <div style={droneGridStyle}>
+          {filteredDrone.map((drone, index) => (
+            <DroneCard key={index} drone={drone} />
           ))}
         </div>
 
         {/* No results message */}
-        {filteredAircraft.length === 0 && (
+        {filteredDrone.length === 0 && (
           <div style={noResultsContainerStyle}>
             <div style={noResultsContentStyle}>
               <div style={noResultsIconStyle}>⚠</div>
-              <div style={noResultsTextStyle}>NO AIRCRAFT MATCH CURRENT PARAMETERS</div>
+              <div style={noResultsTextStyle}>NO DRONE MATCH CURRENT PARAMETERS</div>
               <div style={noResultsSubtextStyle}>ADJUST SEARCH CRITERIA OR RESET FILTERS</div>
               <button
                 style={resetButtonStyle}
@@ -684,7 +682,7 @@ const resultsIconStyle = {
   fontSize: "14px",
 }
 
-const aircraftGridStyle = {
+const droneGridStyle = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
   gap: "20px",
@@ -738,4 +736,4 @@ const resetButtonStyle = {
   transition: "all 0.2s ease",
 }
 
-export default Aircraft
+export default Drone
